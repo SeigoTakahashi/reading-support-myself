@@ -259,48 +259,6 @@ export const deleteUserBook = async (userBookId) => {
     if (!userBookId)
       return { success: false, error: { message: "userBookId is required" } };
     const ref = doc(db, "userBooks", userBookId);
-    // まず userBook を取得して関連する readingRecords の情報を得る
-    try {
-      const ubSnap = await getDoc(ref);
-      if (ubSnap.exists()) {
-        const ub = ubSnap.data();
-        const userId = ub.userId;
-        const bookId = ub.bookId;
-
-        // userBookId を参照する readingRecords を削除
-        try {
-          const rrQs = await findDocuments("readingRecords", { userBookId });
-          for (const d of rrQs.docs) {
-            await deleteDoc(d.ref);
-          }
-        } catch (err) {
-          console.warn(
-            "Failed to cascade-delete readingRecords by userBookId:",
-            err,
-          );
-        }
-
-        // さらに、同ユーザーの同じ bookId を参照する readingRecords も削除（重複防止は不要）
-        if (bookId && userId) {
-          try {
-            const rrQs2 = await findDocuments("readingRecords", {
-              bookId,
-              userId,
-            });
-            for (const d of rrQs2.docs) {
-              await deleteDoc(d.ref);
-            }
-          } catch (err) {
-            console.warn(
-              "Failed to cascade-delete readingRecords by bookId:",
-              err,
-            );
-          }
-        }
-      }
-    } catch (err) {
-      console.warn("Failed to fetch userBook before delete:", err);
-    }
 
     await deleteDoc(ref);
     return { success: true };

@@ -252,10 +252,6 @@ describe("handle-database.js", () => {
       const result = await deleteUserBook("");
       expect(result.success).toBe(false);
     });
-
-    it("カスケード削除（readingRecords）を試みる", async () => {
-      expect(typeof deleteUserBook).toBe("function");
-    });
   });
 
   // ============================================================
