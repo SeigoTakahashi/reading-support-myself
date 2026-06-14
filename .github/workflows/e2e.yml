@@ -1,0 +1,85 @@
+name: Playwright E2E
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+
+      - name: Setup .env (use secrets if available, else placeholders)
+        run: |
+          if [ -z "${{ secrets.VITE_FIREBASE_API_KEY }}" ]; then
+            echo "VITE_FIREBASE_API_KEY=test-api-key" >> .env
+          else
+            echo "VITE_FIREBASE_API_KEY=${{ secrets.VITE_FIREBASE_API_KEY }}" >> .env
+          fi
+          if [ -z "${{ secrets.VITE_FIREBASE_AUTH_DOMAIN }}" ]; then
+            echo "VITE_FIREBASE_AUTH_DOMAIN=test-auth-domain" >> .env
+          else
+            echo "VITE_FIREBASE_AUTH_DOMAIN=${{ secrets.VITE_FIREBASE_AUTH_DOMAIN }}" >> .env
+          fi
+          if [ -z "${{ secrets.VITE_FIREBASE_PROJECT_ID }}" ]; then
+            echo "VITE_FIREBASE_PROJECT_ID=test-project" >> .env
+          else
+            echo "VITE_FIREBASE_PROJECT_ID=${{ secrets.VITE_FIREBASE_PROJECT_ID }}" >> .env
+          fi
+          if [ -z "${{ secrets.VITE_FIREBASE_STORAGE_BUCKET }}" ]; then
+            echo "VITE_FIREBASE_STORAGE_BUCKET=test-bucket" >> .env
+          else
+            echo "VITE_FIREBASE_STORAGE_BUCKET=${{ secrets.VITE_FIREBASE_STORAGE_BUCKET }}" >> .env
+          fi
+          if [ -z "${{ secrets.VITE_FIREBASE_MESSAGING_SENDER_ID }}" ]; then
+            echo "VITE_FIREBASE_MESSAGING_SENDER_ID=0000000000" >> .env
+          else
+            echo "VITE_FIREBASE_MESSAGING_SENDER_ID=${{ secrets.VITE_FIREBASE_MESSAGING_SENDER_ID }}" >> .env
+          fi
+          if [ -z "${{ secrets.VITE_FIREBASE_APP_ID }}" ]; then
+            echo "VITE_FIREBASE_APP_ID=1:000:web:000" >> .env
+          else
+            echo "VITE_FIREBASE_APP_ID=${{ secrets.VITE_FIREBASE_APP_ID }}" >> .env
+          fi
+          if [ -z "${{ secrets.VITE_GIN_API_URL }}" ]; then
+            echo "VITE_GIN_API_URL=http://localhost:8080" >> .env
+          else
+            echo "VITE_GIN_API_URL=${{ secrets.VITE_GIN_API_URL }}" >> .env
+          fi
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build
+        run: npm run build
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+
+      - name: Set PLAYWRIGHT_BASE_URL for production (main push) or leave empty for preview
+        # If this workflow runs on a push to main, point tests at the deployed production site.
+        run: |
+          if [ "${{ github.event_name }}" = "push" ] && [ "${{ github.ref }}" = "refs/heads/main" ]; then
+            echo "PLAYWRIGHT_BASE_URL=https://reading-support-myself.web.app" >> $GITHUB_ENV
+            echo "Using PLAYWRIGHT_BASE_URL=https://reading-support-myself.web.app"
+          else
+            # Leave empty so playwright.config.mjs will start local preview
+            echo "PLAYWRIGHT_BASE_URL=" >> $GITHUB_ENV
+            echo "Using local preview server"
+          fi
+
+      - name: Run Playwright tests
+        env:
+          CI: true
+        run: npm run test:e2e

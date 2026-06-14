@@ -1,0 +1,27 @@
+@import "tailwindcss";
+
+@theme {
+    --animate-progress: progress 2.5s ease-in-out infinite;
+    --animate-fadeIn: fadeIn 0.5s ease-in-out forwards;
+}
+
+@keyframes progress {
+    0% {
+        width: 0%;
+    }
+
+    100% {
+        width: 100%;
+    }
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
