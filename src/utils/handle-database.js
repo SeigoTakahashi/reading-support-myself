@@ -169,54 +169,54 @@ export const getUserLibrary = async (userId) => {
       return { success: false, error: { message: "userId is required" } };
     // userBooks コレクションから該当ユーザーの記録を取得
     const qs = await findDocuments("userBooks", { userId });
-    const merged = [];
+    const merged = await Promise.all(
+      qs.docs.map(async (docSnap) => {
+        const userBook = docSnap.data();
+        const userBookId = docSnap.id;
+        const bookId = userBook.bookId;
 
-    for (const docSnap of qs.docs) {
-      const userBook = docSnap.data();
-      const userBookId = docSnap.id;
-      const bookId = userBook.bookId;
-
-      // bookId が存在する場合は、対応する book ドキュメントを取得
-      let bookData = {};
-      if (bookId) {
-        try {
-          const bq = query(
-            collection(db, "books"),
-            where("__name__", "==", bookId),
-          );
-          const bqs = await getDocs(bq);
-          if (!bqs.empty) {
-            bookData = bqs.docs[0].data();
+        // bookId が存在する場合は、対応する book ドキュメントを取得
+        let bookData = {};
+        if (bookId) {
+          try {
+            const bq = query(
+              collection(db, "books"),
+              where("__name__", "==", bookId),
+            );
+            const bqs = await getDocs(bq);
+            if (!bqs.empty) {
+              bookData = bqs.docs[0].data();
+            }
+          } catch (err) {
+            console.warn("Failed to fetch book for userBook", userBookId, err);
           }
-        } catch (err) {
-          console.warn("Failed to fetch book for userBook", userBookId, err);
         }
-      }
 
-      // userBooks と books をマージして配列に追加
-      merged.push({
-        id: userBookId,
-        bookId: bookId || null,
-        title: bookData.title || userBook.title || "",
-        thumbnail: bookData.thumbnail || userBook.thumbnail || null,
-        authors: bookData.authors || userBook.authors || "",
-        pages: bookData.pages || userBook.pages || "",
-        publisher: bookData.publisher || userBook.publisher || "",
-        publishedDate: bookData.publishedDate || userBook.publishedDate || "",
-        description: bookData.description || userBook.description || "",
-        isbn: bookData.isbn || userBook.isbn || "",
-        // userBooks 側の情報
-        genre: userBook.genre || "",
-        status: userBook.status || "",
-        startDate: userBook.startDate || "",
-        endDate: userBook.endDate || "",
-        rating: userBook.rating ?? null,
-        review: userBook.review || "",
-        tags: userBook.tags || [],
-        createdAt: userBook.createdAt || null,
-        updatedAt: userBook.updatedAt || userBook.createdAt || null,
-      });
-    }
+        // userBooks と books をマージ
+        return {
+          id: userBookId,
+          bookId: bookId || null,
+          title: bookData.title || userBook.title || "",
+          thumbnail: bookData.thumbnail || userBook.thumbnail || null,
+          authors: bookData.authors || userBook.authors || "",
+          pages: bookData.pages || userBook.pages || "",
+          publisher: bookData.publisher || userBook.publisher || "",
+          publishedDate: bookData.publishedDate || userBook.publishedDate || "",
+          description: bookData.description || userBook.description || "",
+          isbn: bookData.isbn || userBook.isbn || "",
+          // userBooks 側の情報
+          genre: userBook.genre || "",
+          status: userBook.status || "",
+          startDate: userBook.startDate || "",
+          endDate: userBook.endDate || "",
+          rating: userBook.rating ?? null,
+          review: userBook.review || "",
+          tags: userBook.tags || [],
+          createdAt: userBook.createdAt || null,
+          updatedAt: userBook.updatedAt || userBook.createdAt || null,
+        };
+      }),
+    );
 
     return { success: true, records: merged };
   } catch (e) {
