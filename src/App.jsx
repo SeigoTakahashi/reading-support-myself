@@ -1,4 +1,3 @@
-import { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./App.css";
 import FullScreenLoading from "./components/FullScreenLoading";
@@ -18,18 +17,6 @@ import { MyLibraryContextProvider } from "../MyLibraryContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
-  const [isInitialLoading, setIsInitialLoading] = useState(true);
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsInitialLoading(false);
-    }, 2000);
-    return () => clearTimeout(timer);
-  }, []);
-
-  if (isInitialLoading) {
-    return <FullScreenLoading />;
-  }
-
   return (
     <>
       <AuthContextProvider>
