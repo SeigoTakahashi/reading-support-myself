@@ -377,7 +377,7 @@ export default function BookForm({
                     })
                   }
                   ref={(el) => (refs.current.startDate = el)}
-                  className={`w-full px-2.5 sm:px-3.5 py-2.5 text-base bg-white border rounded-xl focus:ring-2 focus:ring-zinc-900/5 focus:border-zinc-400 outline-none transition-all box-border ${
+                  className={`w-full px-1.5 sm:px-3.5 py-2.5 text-base bg-white border rounded-xl focus:ring-2 focus:ring-zinc-900/5 focus:border-zinc-400 outline-none transition-all box-border ${
                     validationErrors.dateOrder
                       ? "border-red-500 ring-2 ring-red-100"
                       : "border-zinc-200"
@@ -398,7 +398,7 @@ export default function BookForm({
                       endDate: e.target.value,
                     })
                   }
-                  className={`w-full px-2.5 sm:px-3.5 py-2.5 text-base bg-white border rounded-xl focus:ring-2 focus:ring-zinc-900/5 focus:border-zinc-400 outline-none transition-all box-border ${
+                  className={`w-full px-1.5 sm:px-3.5 py-2.5 text-base bg-white border rounded-xl focus:ring-2 focus:ring-zinc-900/5 focus:border-zinc-400 outline-none transition-all box-border ${
                     validationErrors.dateOrder
                       ? "border-red-500 ring-2 ring-red-100"
                       : "border-zinc-200"
