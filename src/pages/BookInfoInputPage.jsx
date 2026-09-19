@@ -323,18 +323,23 @@ export default function BookInfoInputPage() {
       <Breadcrumb items={["メイン", "マイライブラリ", "本を追加"]} />
 
       <div className="bg-white rounded-2xl shadow-xl border border-gray-200/50 overflow-hidden">
-        <div className="bg-linear-to-r from-amber-500 via-orange-500 to-rose-500 p-6 text-white">
+        <div className="bg-zinc-50/85 border-x border-t border-zinc-200/80 rounded-t-2xl p-6">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-linear-to-br from-amber-500 to-orange-500 rounded-xl flex items-center justify-center shadow-lg">
-              <BookOpen className="w-6 h-6 text-white" />
+            <div className="w-10 h-10 bg-linear-to-br from-amber-500 to-orange-500 rounded-xl flex items-center justify-center shadow-lg">
+              <BookOpen className="w-5 h-5 text-white" />
             </div>
-            <h1 className="text-2xl font-bold">本を追加</h1>
+            <div>
+              <h1 className="text-xl font-bold text-zinc-900">本を追加</h1>
+              <p className="text-xs text-zinc-500 mt-0.5">
+                新しい書籍情報を登録します
+              </p>
+            </div>
           </div>
         </div>
 
         <div className="p-6 lg:p-8 space-y-8">
           {/* ISBN/バーコード入力セクション */}
-          <div className="bg-white rounded-2xl p-4 sm:p-8 shadow-lg ring-1 ring-amber-100">
+          <div className="bg-white rounded-2xl p-4 sm:p-8 shadow-sm border border-zinc-200/80">
             <div className="flex items-center gap-3 mb-6 border-b pb-4">
               <Scan className="w-6 h-6 text-orange-500" />
               <h2 className="text-xl font-extrabold text-gray-900 tracking-tight">
@@ -381,7 +386,7 @@ export default function BookInfoInputPage() {
 
             {/* スキャンモード */}
             {inputMode === "scan" ? (
-              <div className="flex flex-col items-center justify-center p-6 bg-amber-50 rounded-xl border border-amber-200 shadow-inner">
+              <div className="flex flex-col items-center justify-center p-6 rounded-xl border border-amber-200 shadow-inner">
                 <Camera className="w-12 h-12 text-amber-600 mb-4" />
                 <button
                   onClick={() => setShowScanner(true)}

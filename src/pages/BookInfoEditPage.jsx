@@ -190,12 +190,17 @@ export default function BookInfoEditPage() {
         <InlineLoading />
       ) : (
         <div className="bg-white rounded-2xl shadow-xl border border-gray-200/50 overflow-hidden">
-          <div className="bg-linear-to-r from-amber-500 via-orange-500 to-rose-500 p-6">
+          <div className="bg-zinc-50/85 border-x border-t border-zinc-200/80 rounded-t-2xl p-6">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-linear-to-br from-amber-500 to-orange-500 rounded-xl flex items-center justify-center shadow-lg">
-                <BookOpen className="w-6 h-6 text-white" />
+              <div className="w-10 h-10 bg-linear-to-br from-amber-500 to-orange-500 rounded-xl flex items-center justify-center shadow-lg">
+                <BookOpen className="w-5 h-5 text-white" />
               </div>
-              <h1 className="text-white text-2xl font-bold">本を編集</h1>
+              <div>
+                <h1 className="text-xl font-bold text-zinc-900">本を編集</h1>
+                <p className="text-xs text-zinc-500 mt-0.5">
+                  登録されている書籍情報を更新します
+                </p>
+              </div>
             </div>
           </div>
 

@@ -24,7 +24,7 @@ import StarAndRating from "../components/StarAndRating";
 import LimitedTags from "../components/LimitedTags";
 import { deleteUserBook } from "../utils/handle-database";
 import { applyFilters as applyFiltersUtil } from "../utils/library-filter";
-import { getStatusColor } from "../utils/status-color";
+import { getStatusColor, getStatusDotColor } from "../utils/status-color";
 import { AuthContextConsumer } from "../../AuthContext";
 import { MyLibraryContextConsumer } from "../../MyLibraryContext";
 import { useUserLibrary } from "../hooks/useUserLibrary";
@@ -400,11 +400,13 @@ export default function MyLibraryPage() {
                         )}
                         <div className="absolute top-3 left-3">
                           <span
-                            className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold border ${getStatusColor(
+                            className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border ${getStatusColor(
                               book?.status ?? "",
                             )} backdrop-blur-sm`}
                           >
-                            <BookOpen className="w-3 h-3 text-current" />
+                            <span
+                              className={`w-1.5 h-1.5 rounded-full ${getStatusDotColor(book?.status ?? "")}`}
+                            />
                             {book?.status ?? ""}
                           </span>
                         </div>
@@ -501,8 +503,12 @@ export default function MyLibraryPage() {
 
                             <div className="hidden sm:flex w-36 items-center ml-2">
                               <span className="inline-flex items-center gap-1 px-2 py-1 bg-purple-50 text-purple-700 rounded-lg text-xs font-medium">
-                                <Tag className="w-3 h-3" />
-                                {book?.genre ?? ""}
+                                {book?.genre ? (
+                                  <>
+                                    <Tag className="w-3 h-3" />
+                                    {book.genre}
+                                  </>
+                                ) : null}
                               </span>
                             </div>
                             <div className="hidden sm:flex flex-1">
@@ -535,11 +541,13 @@ export default function MyLibraryPage() {
 
                         <div className="absolute right-16 bottom-3">
                           <span
-                            className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold border ${getStatusColor(
+                            className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border ${getStatusColor(
                               book.status,
                             )}`}
                           >
-                            <BookOpen className="w-3 h-3 text-current" />
+                            <span
+                              className={`w-1.5 h-1.5 rounded-full ${getStatusDotColor(book.status)}`}
+                            />
                             {book.status}
                           </span>
                         </div>

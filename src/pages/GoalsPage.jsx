@@ -121,7 +121,7 @@ export default function GoalsPage() {
               ) : (
                 // 月間目標コンテンツ
                 <div className="space-y-6">
-                  <div className="flex items-center justify-between p-4 bg-linear-to-r from-blue-50 to-transparent rounded-xl border border-blue-100">
+                  <div className="flex items-center justify-between p-4 rounded-xl border border-blue-100">
                     <div>
                       <p className="text-sm text-gray-600 mb-1">目標冊数</p>
                       {/* 月間目標編集モード */}
@@ -233,7 +233,7 @@ export default function GoalsPage() {
                 <GoalCardSkeleton count={1} />
               ) : (
                 <div className="space-y-6">
-                  <div className="flex items-center justify-between p-4 bg-linear-to-r from-purple-50 to-transparent rounded-xl border border-purple-100">
+                  <div className="flex items-center justify-between p-4 rounded-xl border border-purple-100">
                     <div>
                       <p className="text-sm text-gray-600 mb-1">目標冊数</p>
                       {editingState.yearly ? (
