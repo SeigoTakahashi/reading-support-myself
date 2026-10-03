@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import BaseTemplate from "../components/BaseTemplate";
 import Breadcrumb from "../components/Breadcrumb";
@@ -13,6 +13,7 @@ import {
   Tag,
   Edit,
   Trash2,
+  MoreVertical,
   Book,
   Building2,
   Calendar,
@@ -37,9 +38,31 @@ export default function BookInfoDetailPage() {
   const [finding, setFinding] = useState(false);
   const [book, setBook] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showActionsMenu, setShowActionsMenu] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [showFullSummary, setShowFullSummary] = useState(false);
   const [showFullReview, setShowFullReview] = useState(false);
+  const actionsMenuRef = useRef(null);
+
+  useEffect(() => {
+    if (!showActionsMenu) return;
+
+    const handleClickOutside = (event) => {
+      if (!actionsMenuRef.current?.contains(event.target)) {
+        setShowActionsMenu(false);
+      }
+    };
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape") setShowActionsMenu(false);
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [showActionsMenu]);
 
   useEffect(() => {
     // ライブラリデータが読み込み中の場合
@@ -104,32 +127,53 @@ export default function BookInfoDetailPage() {
         // メインのカードコンテナ
         <div className="bg-white rounded-2xl border border-zinc-200/80 p-6 md:p-8 mb-10 shadow-sm">
           <div className="relative">
-            {/* 編集・削除ボタン（右上配置） */}
-            <div className="flex items-center justify-end gap-2 mb-6 md:absolute md:top-0 md:right-0 z-20">
+            {/* 編集・削除メニュー（右上配置） */}
+            <div
+              ref={actionsMenuRef}
+              className="relative flex items-center justify-end mb-6 md:absolute md:top-0 md:right-0 z-20"
+            >
               <button
                 type="button"
-                aria-label="編集"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  navigate(`/mylibrary/edit/${book.id}`);
-                }}
-                className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-white border border-zinc-200 rounded-lg text-sm font-medium text-zinc-700 hover:bg-zinc-50 hover:border-zinc-300 transition-all shadow-2xs cursor-pointer"
+                aria-label="操作メニュー"
+                aria-expanded={showActionsMenu}
+                aria-controls="book-actions-menu"
+                onClick={() => setShowActionsMenu((isOpen) => !isOpen)}
+                className="p-2 bg-white border border-zinc-200 rounded-lg text-zinc-600 hover:bg-zinc-50 hover:border-zinc-300 transition-all shadow-2xs cursor-pointer"
               >
-                <Edit className="w-4 h-4 text-zinc-500" />
-                <span>編集</span>
+                <MoreVertical className="w-5 h-5" />
               </button>
-              <button
-                type="button"
-                aria-label="削除"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setShowDeleteModal(true);
-                }}
-                className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-red-50/60 border border-red-200/80 text-red-600 rounded-lg text-sm font-medium hover:bg-red-100/60 transition-all shadow-2xs cursor-pointer"
-              >
-                <Trash2 className="w-4 h-4 text-red-500" />
-                <span>削除</span>
-              </button>
+              {showActionsMenu && (
+                <div
+                  id="book-actions-menu"
+                  role="menu"
+                  className="absolute top-full right-0 mt-2 w-40 z-50 bg-white border border-zinc-200 rounded-xl shadow-lg py-2"
+                >
+                  <button
+                    type="button"
+                    role="menuitem"
+                    onClick={() => {
+                      setShowActionsMenu(false);
+                      navigate(`/mylibrary/edit/${book.id}`);
+                    }}
+                    className="w-full text-left px-4 py-2 text-sm text-zinc-700 hover:bg-zinc-50 cursor-pointer flex items-center gap-2"
+                  >
+                    <Edit className="w-4 h-4 text-zinc-400" />
+                    <span>編集</span>
+                  </button>
+                  <button
+                    type="button"
+                    role="menuitem"
+                    onClick={() => {
+                      setShowActionsMenu(false);
+                      setShowDeleteModal(true);
+                    }}
+                    className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-zinc-50 cursor-pointer flex items-center gap-2"
+                  >
+                    <Trash2 className="w-4 h-4 text-red-500" />
+                    <span>削除</span>
+                  </button>
+                </div>
+              )}
             </div>
 
             {/* コンテンツレイアウト */}

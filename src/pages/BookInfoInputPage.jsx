@@ -394,7 +394,6 @@ export default function BookInfoInputPage() {
                   type="button"
                   aria-label="バーコードスキャナーを開く"
                 >
-                  <Camera className="w-6 h-6" />
                   <span className="md:hidden">起動</span>
                   <span className="hidden md:inline">スキャナーを起動</span>
                 </button>
