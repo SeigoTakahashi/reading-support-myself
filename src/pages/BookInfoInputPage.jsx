@@ -170,7 +170,7 @@ export default function BookInfoInputPage() {
     setIsLoadingTitle(true);
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_GIN_API_URL}/books?searchQuery=${encodeURIComponent(`intitle:${title}`)}&maxResults=40`,
+        `${import.meta.env.VITE_GIN_API_URL}/books?searchQuery=${encodeURIComponent(title)}&maxResults=40`,
       );
 
       if (!response.ok) throw new Error("Failed to fetch books");
