@@ -18,7 +18,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "22"
+          node-version: "24.22.1"
           cache: "npm"
 
       - name: Setup env
@@ -32,7 +32,7 @@ jobs:
           echo "VITE_GIN_API_URL=${{ secrets.VITE_GIN_API_URL }}" >> .env
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
       - name: Run ESLint
         run: npm run lint
